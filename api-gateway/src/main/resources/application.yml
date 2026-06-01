@@ -1,0 +1,177 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        # User Service Routes
+        - id: user-service-auth
+          uri: lb://user-service
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - RewritePath=/api/auth/(?<segment>.*), /api/auth/$\{segment}
+        
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - RewritePath=/api/users/(?<segment>.*), /api/users/$\{segment}
+        
+        # Product Service Routes
+        - id: product-service-products
+          uri: lb://product-service
+          predicates:
+            - Path=/api/products/**
+          filters:
+            - RewritePath=/api/products/(?<segment>.*), /api/products/$\{segment}
+        
+        - id: product-service-categories
+          uri: lb://product-service
+          predicates:
+            - Path=/api/categories/**
+          filters:
+            - RewritePath=/api/categories/(?<segment>.*), /api/categories/$\{segment}
+        
+        # Cart Service Routes
+        - id: cart-service
+          uri: lb://cart-service
+          predicates:
+            - Path=/api/cart/**
+          filters:
+            - RewritePath=/api/cart/(?<segment>.*), /api/cart/$\{segment}
+        
+        - id: wishlist-service
+          uri: lb://cart-service
+          predicates:
+            - Path=/api/wishlist/**
+          filters:
+            - RewritePath=/api/wishlist/(?<segment>.*), /api/wishlist/$\{segment}
+        
+        # Order Service Routes
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - RewritePath=/api/orders/(?<segment>.*), /api/orders/$\{segment}
+        
+        # Payment Service Routes
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/payments/**
+          filters:
+            - RewritePath=/api/payments/(?<segment>.*), /api/payments/$\{segment}
+        
+        - id: wallet-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/wallet/**
+          filters:
+            - RewritePath=/api/wallet/(?<segment>.*), /api/wallet/$\{segment}
+        
+        # Delivery Service Routes
+        - id: delivery-service
+          uri: lb://delivery-service
+          predicates:
+            - Path=/api/delivery/**
+          filters:
+            - RewritePath=/api/delivery/(?<segment>.*), /api/delivery/$\{segment}
+        
+        # Notification Service Routes
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - RewritePath=/api/notifications/(?<segment>.*), /api/notifications/$\{segment}
+        
+        # Coupon Service Routes
+        - id: coupon-service
+          uri: lb://coupon-service
+          predicates:
+            - Path=/api/coupons/**
+          filters:
+            - RewritePath=/api/coupons/(?<segment>.*), /api/coupons/$\{segment}
+        
+        # Admin Routes
+        - id: admin-users
+          uri: lb://user-service
+          predicates:
+            - Path=/api/admin/users/**
+          filters:
+            - RewritePath=/api/admin/users/(?<segment>.*), /api/admin/users/$\{segment}
+        
+        - id: admin-products
+          uri: lb://product-service
+          predicates:
+            - Path=/api/admin/products/**
+          filters:
+            - RewritePath=/api/admin/products/(?<segment>.*), /api/admin/products/$\{segment}
+        
+        - id: admin-orders
+          uri: lb://order-service
+          predicates:
+            - Path=/api/admin/orders/**
+          filters:
+            - RewritePath=/api/admin/orders/(?<segment>.*), /api/admin/orders/$\{segment}
+        
+        - id: admin-delivery-partners
+          uri: lb://delivery-service
+          predicates:
+            - Path=/api/admin/delivery-partners/**
+          filters:
+            - RewritePath=/api/admin/delivery-partners/(?<segment>.*), /api/admin/delivery-partners/$\{segment}
+      
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: 
+              - "http://localhost:5173"
+              - "http://localhost:3000"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  secret: jwt_secret_key
+  expiration: 3600000
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty: INFO
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

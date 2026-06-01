@@ -1,0 +1,165 @@
+version: '3.8'
+
+services:
+  eureka-server:
+    image: ${ECR_REGISTRY}/eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  api-gateway:
+    image: ${ECR_REGISTRY}/api-gateway:latest
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - EUREKA_URL=http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  user-service:
+    image: ${ECR_REGISTRY}/user-service:latest
+    container_name: user-service
+    expose:
+      - "8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - EUREKA_URL=http://eureka-server:8761/eureka/
+      - DB_URL=${DB_URL}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - S3_BUCKET=${S3_BUCKET}
+      - AWS_REGION=${AWS_REGION}
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    restart: unless-stopped
+
+  product-service:
+    image: ${ECR_REGISTRY}/product-service:latest
+    container_name: product-service
+    expose:
+      - "8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - EUREKA_URL=http://eureka-server:8761/eureka/
+      - DB_URL=${DB_URL}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - S3_BUCKET=${S3_BUCKET}
+      - AWS_REGION=${AWS_REGION}
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    restart: unless-stopped
+
+  order-service:
+    image: ${ECR_REGISTRY}/order-service:latest
+    container_name: order-service
+    expose:
+      - "8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - EUREKA_URL=http://eureka-server:8761/eureka/
+      - DB_URL=${DB_URL}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    restart: unless-stopped
+
+  cart-service:
+    image: ${ECR_REGISTRY}/cart-service:latest
+    container_name: cart-service
+    expose:
+      - "8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - EUREKA_URL=http://eureka-server:8761/eureka/
+      - DB_URL=${DB_URL}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    restart: unless-stopped
+
+  payment-service:
+    image: ${ECR_REGISTRY}/payment-service:latest
+    container_name: payment-service
+    expose:
+      - "8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - EUREKA_URL=http://eureka-server:8761/eureka/
+      - DB_URL=${DB_URL}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - RAZORPAY_KEY=${RAZORPAY_KEY}
+      - RAZORPAY_SECRET=${RAZORPAY_SECRET}
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    restart: unless-stopped
+
+  delivery-service:
+    image: ${ECR_REGISTRY}/delivery-service:latest
+    container_name: delivery-service
+    expose:
+      - "8086"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - EUREKA_URL=http://eureka-server:8761/eureka/
+      - DB_URL=${DB_URL}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - S3_BUCKET=${S3_BUCKET}
+      - AWS_REGION=${AWS_REGION}
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    restart: unless-stopped
+
+  notification-service:
+    image: ${ECR_REGISTRY}/notification-service:latest
+    container_name: notification-service
+    expose:
+      - "8087"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - EUREKA_URL=http://eureka-server:8761/eureka/
+      - SMS_API_KEY=${SMS_API_KEY}
+      - SMS_API_SECRET=${SMS_API_SECRET}
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    restart: unless-stopped
+
+networks:
+  default:
+    name: revcart-network

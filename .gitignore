@@ -1,0 +1,139 @@
+```gitignore id="t8m4xp"
+# =========================
+# Maven / Spring Boot
+# =========================
+target/
+**/target/
+*.jar
+*.war
+*.ear
+*.class
+
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# =========================
+# IDE - IntelliJ
+# =========================
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# =========================
+# IDE - Eclipse
+# =========================
+.classpath
+.project
+.settings/
+bin/
+
+# =========================
+# IDE - VSCode
+# =========================
+.vscode/
+*.code-workspace
+
+# =========================
+# IDE - NetBeans
+# =========================
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+log/
+
+# =========================
+# Node / Frontend
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.local
+.env.*.local
+
+*.key
+*.pem
+*.p12
+*.jks
+
+secrets/
+credentials/
+
+# Local config files
+**/application-local.yml
+**/application-secret.yml
+**/application-prod.yml
+
+# =========================
+# Database
+# =========================
+*.db
+*.sqlite
+
+# =========================
+# Docker
+# =========================
+*.dockerignore
+
+# =========================
+# Temporary Files
+# =========================
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.backup
+
+# =========================
+# Coverage / Reports
+# =========================
+coverage/
+.coverage
+*.cover
+
+# =========================
+# Keep Important Files
+# =========================
+!Dockerfile
+!docker-compose.yml
+!README.md
+!pom.xml
+!.github/
+
+# =========================
+# Postman
+# =========================
+**/postman_environment*.json
+```

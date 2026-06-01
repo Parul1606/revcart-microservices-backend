@@ -1,0 +1,35 @@
+    server:
+    port: 8081
+
+  spring:
+    application:
+      name: user-service
+
+    datasource:
+      url: jdbc:mysql://localhost:3306/revcart_user?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: YOUR_MYSQL_PASSWORD
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+    jpa:
+      hibernate:
+        ddl-auto: update
+      show-sql: true
+
+    servlet:
+      multipart:
+        enabled: true
+        max-file-size: 5MB
+        max-request-size: 25MB
+
+  eureka:
+    client:
+      enabled: false
+
+  jwt:
+    secret: YOUR_JWT_SECRET
+    expiration: 3600000
+
+  logging:
+    level:
+      com.revature.userservice: DEBUG

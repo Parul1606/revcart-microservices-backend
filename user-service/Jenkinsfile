@@ -1,0 +1,122 @@
+pipeline {
+    agent any
+    
+    environment {
+        SERVICE_NAME = 'user-service'
+        DOCKER_IMAGE = "rameezexe/${SERVICE_NAME}"
+        EC2_HOST = 'localhost'
+        SERVICE_PORT = '8081'
+    }
+    
+    tools {
+        maven 'Maven-3.9'
+        jdk 'Java-21'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    credentialsId: 'github-credentials',
+                    url: 'https://github.com/Virtusa-Java-FSD/RevCart-P2-E-Commerce-Grocery-Delivery-Microservices.git'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                dir("${SERVICE_NAME}") {
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                dir("${SERVICE_NAME}") {
+                    sh 'mvn test'
+                }
+            }
+            post {
+                always {
+                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
+                }
+            }
+        }
+        
+        // Docker stages disabled for local testing
+        // Uncomment when deploying to EC2 with Docker access
+        /*
+        stage('Docker Build') {
+            steps {
+                dir("${SERVICE_NAME}") {
+                    script {
+                        docker.build("${DOCKER_IMAGE}:${BUILD_NUMBER}")
+                        docker.build("${DOCKER_IMAGE}:latest")
+                    }
+                }
+            }
+        }
+        
+        stage('Docker Push') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-credentials') {
+                        docker.image("${DOCKER_IMAGE}:${BUILD_NUMBER}").push()
+                        docker.image("${DOCKER_IMAGE}:latest").push()
+                    }
+                }
+            }
+        }
+        */
+        
+        // Deployment stages disabled for local testing
+        // Uncomment when deploying to EC2
+        /*
+        stage('Deploy to EC2') {
+            steps {
+                sshagent(['ec2-ssh-key']) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ec2-user@${EC2_HOST} '
+                            cd /home/ec2-user/app &&
+                            docker-compose pull ${SERVICE_NAME} &&
+                            docker-compose up -d ${SERVICE_NAME}
+                        '
+                    """
+                }
+            }
+        }
+        
+        stage('Health Check') {
+            steps {
+                script {
+                    sleep(time: 10, unit: 'SECONDS')
+                    def response = sh(
+                        script: "curl -s -o /dev/null -w '%{http_code}' http://${EC2_HOST}:${SERVICE_PORT}/api/users/health",
+                        returnStdout: true
+                    ).trim()
+                    
+                    if (response != '200') {
+                        error("Health check failed! HTTP ${response}")
+                    }
+                    echo "✅ Health check passed!"
+                }
+            }
+        }
+        */
+    }
+    
+    post {
+        success {
+            echo "✅ ${SERVICE_NAME} deployed successfully!"
+            echo "Build: ${BUILD_NUMBER}"
+            echo "Service URL: http://${EC2_HOST}:${SERVICE_PORT}"
+        }
+        failure {
+            echo "❌ ${SERVICE_NAME} deployment failed!"
+            echo "Check logs for details"
+        }
+        always {
+            cleanWs()
+        }
+    }
+}
