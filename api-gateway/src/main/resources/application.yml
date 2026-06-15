@@ -131,22 +131,6 @@ spring:
             - Path=/api/admin/delivery-partners/**
           filters:
             - RewritePath=/api/admin/delivery-partners/(?<segment>.*), /api/admin/delivery-partners/$\{segment}
-      
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: 
-              - "http://localhost:5173"
-              - "http://localhost:3000"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - PATCH
-              - OPTIONS
-            allowedHeaders: "*"
-            allowCredentials: true
 
 eureka:
   client:

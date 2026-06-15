@@ -1,48 +1,75 @@
- server:
-    port: 8086
+server:
+  port: 8086
 
-    tomcat:
-      max-http-form-post-size: -1
-      max-swallow-size: 100MB
-      max-parameter-count: -1
+  tomcat:
+    max-http-form-post-size: -1
+    max-swallow-size: 100MB
+    max-parameter-count: -1
 
-  spring:
-    application:
-      name: delivery-service
+spring:
+  application:
+    name: delivery-service
 
-    datasource:
-      url: jdbc:mysql://localhost:3306/revcart_delivery?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
-      username: root
-      password: YOUR_MYSQL_PASSWORD
-      driver-class-name: com.mysql.cj.jdbc.Driver
+  datasource:
+    url: jdbc:mysql://localhost:3306/revcart_delivery?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: Parul@012#016
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
-    jpa:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
       hibernate:
-        ddl-auto: update
-      show-sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
 
-    servlet:
-      multipart:
-        enabled: true
-        max-file-size: 5MB
-        max-request-size: 25MB
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 25MB
 
-  eureka:
-    client:
-      enabled: false
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
 
-  jwt:
-    secret: YOUR_JWT_SECRET
-    expiration: 3600000
+jwt:
+  secret: jWt_SecureRevCart_2024_@!#$%^&*StrongKey123456789
+  expiration: 3600000
 
-  sms:
-    test:
-      mode: true
+sms:
+  test:
+    mode: true
+  fast2sms:
+    api:
+      key: ${FAST2SMS_API_KEY:dummy_key}
 
-  file:
-    upload:
-      dir: uploads/delivery-partners
+file:
+  upload:
+    dir: uploads/delivery-partners
 
-  logging:
-    level:
-      com.revature.deliveryservice: DEBUG
+logging:
+  level:
+    com.revature.deliveryservice: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.apache.tomcat.util.http.fileupload: DEBUG
+    org.apache.catalina.connector.Request: DEBUG
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

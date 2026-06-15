@@ -1,35 +1,53 @@
-    server:
-    port: 8081
+server:
+  port: 8081
 
-  spring:
-    application:
-      name: user-service
+spring:
+  application:
+    name: user-service
 
-    datasource:
-      url: jdbc:mysql://localhost:3306/revcart_user?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
-      username: root
-      password: YOUR_MYSQL_PASSWORD
-      driver-class-name: com.mysql.cj.jdbc.Driver
+  datasource:
+    url: jdbc:mysql://localhost:3306/revcart_user?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: Parul@012#016
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
-    jpa:
-      hibernate:
-        ddl-auto: update
-      show-sql: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 
-    servlet:
-      multipart:
-        enabled: true
-        max-file-size: 5MB
-        max-request-size: 25MB
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 25MB
 
-  eureka:
-    client:
-      enabled: false
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
 
-  jwt:
-    secret: YOUR_JWT_SECRET
-    expiration: 3600000
+jwt:
+  secret: jWt_SecureRevCart_2024_@!#$%^&*StrongKey123456789
+  expiration: 3600000
 
-  logging:
-    level:
-      com.revature.userservice: DEBUG
+logging:
+  level:
+    com.revature.userservice: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

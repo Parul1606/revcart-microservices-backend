@@ -37,6 +37,8 @@ public class CartController {
                     Product product = productClient.getProductById(item.getProductId()).getData();
                     itemResponse.setProduct(product);
                     itemResponse.setQuantity(item.getQuantity());
+                    itemResponse.setOptionName(item.getOptionName());
+                    itemResponse.setPrice(item.getPrice());
                     return itemResponse;
                 })
                 .collect(Collectors.toList()));
@@ -49,20 +51,21 @@ public class CartController {
     }
 
     @PostMapping("/items")
-    public ResponseEntity<CartResponse> addItem(
+    public synchronized ResponseEntity<CartResponse> addItem(
             @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
             @RequestBody CartItemRequest request) {
         return ResponseEntity
-                .ok(toCartResponse(cartService.addItem(userId, request.getProductId(), request.getQuantity())));
+                .ok(toCartResponse(cartService.addItem(userId, request.getProductId(), request.getQuantity(), request.getOptionName(), request.getPrice())));
     }
 
     @PutMapping("/items/{productId}")
-    public ResponseEntity<CartResponse> updateItemQuantity(
+    public synchronized ResponseEntity<CartResponse> updateItemQuantity(
             @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
             @PathVariable Long productId,
+            @RequestParam(value = "optionName", required = false) String optionName,
             @RequestBody Map<String, Integer> payload) {
         return ResponseEntity
-                .ok(toCartResponse(cartService.updateItemQuantity(userId, productId, payload.get("quantity"))));
+                .ok(toCartResponse(cartService.updateItemQuantity(userId, productId, optionName, payload.get("quantity"))));
     }
 
     @DeleteMapping("/items/{itemId}")

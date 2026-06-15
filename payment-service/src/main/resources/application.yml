@@ -5,9 +5,9 @@ spring:
   application:
     name: payment-service
   datasource:
-    url: jdbc:mysql://switchyard.proxy.rlwy.net:16615/railway
+    url: jdbc:mysql://localhost:3306/revcart_payment?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: wUlffAGcRsbFRXgwBscTbcYrVIaPkKpc
+    password: Parul@012#016
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -29,7 +29,7 @@ eureka:
     instance-id: ${spring.application.name}:${server.port}
 
 jwt:
-  secret: kJ1EP+Vjt7CtOkcJ8ZLPzxdqhF1eT0OueweoDvASji0=
+  secret: jWt_SecureRevCart_2024_@!#$%^&*StrongKey123456789
   expiration: 3600000
 
 razorpay:

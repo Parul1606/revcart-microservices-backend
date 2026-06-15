@@ -215,6 +215,9 @@ public class UserController {
         if (request.get("address") != null) {
             user.setAddress(request.get("address"));
         }
+        if (request.get("avatarUrl") != null) {
+            user.setAvatarUrl(request.get("avatarUrl"));
+        }
 
         userRepository.save(user);
 
@@ -416,6 +419,7 @@ public class UserController {
         userData.put("firstName", user.getFirstName());
         userData.put("lastName", user.getLastName());
         userData.put("email", user.getEmail());
+        userData.put("avatarUrl", user.getAvatarUrl());
         userData.put("dateOfBirth", user.getDateOfBirth());
         userData.put("gender", user.getGender());
         userData.put("latitude", user.getLatitude());

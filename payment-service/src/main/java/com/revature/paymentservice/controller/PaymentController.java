@@ -32,6 +32,7 @@ public class PaymentController {
             PaymentResponse response = paymentService.createPaymentOrder(request, orderId);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            e.printStackTrace();
             PaymentResponse errorResponse = new PaymentResponse();
             errorResponse.setStatus("FAILED");
             errorResponse.setMessage(e.getMessage());
@@ -53,6 +54,7 @@ public class PaymentController {
 
             return ResponseEntity.ok(result);
         } catch (Exception e) {
+            e.printStackTrace();
             Map<String, Object> error = new HashMap<>();
             error.put("success", false);
             error.put("message", e.getMessage());

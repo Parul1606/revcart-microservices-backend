@@ -93,6 +93,7 @@ public class AuthController {
         userData.put("firstName", user.getFirstName());
         userData.put("lastName", user.getLastName());
         userData.put("email", user.getEmail());
+        userData.put("avatarUrl", user.getAvatarUrl());
         userData.put("role", user.getRole());
         userData.put("profileCompleted", user.isProfileCompleted());
 
@@ -140,6 +141,7 @@ public class AuthController {
         userData.put("firstName", user.getFirstName());
         userData.put("lastName", user.getLastName());
         userData.put("email", user.getEmail());
+        userData.put("avatarUrl", user.getAvatarUrl());
         userData.put("role", user.getRole());
         userData.put("profileCompleted", user.isProfileCompleted());
 
