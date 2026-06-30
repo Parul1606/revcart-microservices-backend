@@ -1,4 +1,4 @@
-FROM openjdk:21-slim
+FROM openjdk:17-slim
 
 LABEL maintainer="your-email@example.com"
 LABEL service="payment-service"

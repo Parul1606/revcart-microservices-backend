@@ -2,9 +2,11 @@ package com.revature.productservice.service;
 
 import com.revature.productservice.entity.Product;
 import com.revature.productservice.repository.ProductRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,5 +76,15 @@ public class ProductService {
                         (p.getDescription() != null
                                 && p.getDescription().toLowerCase().contains(keyword.toLowerCase())))
                 .collect(Collectors.toList());
+    }
+
+    @Cacheable(value = "categories", key = "'all'")
+    public List<String> getUniqueCategories() {
+        List<String> categories = productRepository.findAll().stream()
+                .map(Product::getCategory)
+                .distinct()
+                .sorted()
+                .toList();
+        return new ArrayList<>(categories);
     }
 }

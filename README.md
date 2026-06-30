@@ -134,7 +134,7 @@ This project contains the complete microservices decomposition of the RevCart mo
 
 ### Prerequisites
 
-- Java 21
+- Java 17
 - Maven 3.8+
 - MySQL 8.0+
 - AWS S3 credentials (for file uploads)
@@ -253,7 +253,7 @@ P2/
 
 - **Spring Boot**: 3.3.0
 - **Spring Cloud**: 2023.0.0
-- **Java**: 21
+- **Java**: 17
 - **Database**: MySQL 8.0
 - **Service Discovery**: Netflix Eureka
 - **API Gateway**: Spring Cloud Gateway

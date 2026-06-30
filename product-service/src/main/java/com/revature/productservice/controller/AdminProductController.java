@@ -5,6 +5,7 @@ import com.revature.productservice.entity.Product;
 import com.revature.productservice.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -47,12 +48,14 @@ public class AdminProductController {
     }
 
     @PostMapping
+    @CacheEvict(value = "categories", allEntries = true)
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         Product created = productService.createProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
+    @CacheEvict(value = "categories", allEntries = true)
     public ResponseEntity<Product> updateProduct(
             @PathVariable Long id,
             @RequestBody Product product) {
@@ -65,6 +68,7 @@ public class AdminProductController {
     }
 
     @DeleteMapping("/{id}")
+    @CacheEvict(value = "categories", allEntries = true)
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();

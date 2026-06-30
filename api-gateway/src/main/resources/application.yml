@@ -4,12 +4,23 @@ server:
 spring:
   application:
     name: api-gateway
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
   cloud:
     gateway:
       discovery:
         locator:
           enabled: true
           lower-case-service-id: true
+      default-filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 1
+            redis-rate-limiter.burstCapacity: 25
+            redis-rate-limiter.requestedTokens: 5
+            key-resolver: "#{@ipKeyResolver}"
       routes:
         # User Service Routes
         - id: user-service-auth
@@ -37,7 +48,7 @@ spring:
         - id: product-service-categories
           uri: lb://product-service
           predicates:
-            - Path=/api/categories/**
+            - Path=/api/categories, /api/categories/**
           filters:
             - RewritePath=/api/categories/(?<segment>.*), /api/categories/$\{segment}
         
