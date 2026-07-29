@@ -76,11 +76,15 @@ public class NotificationController {
     }
 
     @GetMapping("/unread/count")
-    public ResponseEntity<Map<String, Long>> getUnreadCountForCurrentUser() {
-        // TODO: Get user ID from JWT token
-        // For now, return 0 as placeholder
+    public ResponseEntity<Map<String, Long>> getUnreadCountForCurrentUser(
+            @RequestHeader(value = "X-User-Id", required = false) String userIdHeader) {
+        if (userIdHeader == null || userIdHeader.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        Long userId = Long.valueOf(userIdHeader);
+        Long count = notificationService.getUnreadCount(userId);
         Map<String, Long> response = new HashMap<>();
-        response.put("count", 0L);
+        response.put("count", count);
         return ResponseEntity.ok(response);
     }
 

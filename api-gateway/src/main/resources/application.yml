@@ -21,6 +21,7 @@ spring:
             redis-rate-limiter.burstCapacity: 25
             redis-rate-limiter.requestedTokens: 5
             key-resolver: "#{@ipKeyResolver}"
+        - AuthenticationFilter
       routes:
         # User Service Routes
         - id: user-service-auth

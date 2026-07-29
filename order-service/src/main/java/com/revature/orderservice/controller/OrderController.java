@@ -21,7 +21,12 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody CreateOrderRequest request) {
+    public ResponseEntity<OrderResponse> createOrder(
+            @RequestHeader(value = "X-User-Id", required = false) String userIdHeader,
+            @RequestBody CreateOrderRequest request) {
+        if (userIdHeader != null && !userIdHeader.isEmpty()) {
+            request.setUserId(Long.valueOf(userIdHeader));
+        }
         OrderResponse response = orderService.createOrder(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -38,8 +43,13 @@ public class OrderController {
     }
 
     @GetMapping("/my-orders")
-    public ResponseEntity<List<OrderResponse>> getMyOrders() {
-        List<OrderResponse> orders = orderService.getAllOrders();
+    public ResponseEntity<List<OrderResponse>> getMyOrders(
+            @RequestHeader(value = "X-User-Id", required = false) String userIdHeader) {
+        if (userIdHeader == null || userIdHeader.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        Long userId = Long.valueOf(userIdHeader);
+        List<OrderResponse> orders = orderService.getUserOrders(userId);
         return ResponseEntity.ok(orders);
     }
 
