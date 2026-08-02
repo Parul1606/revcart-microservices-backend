@@ -5,6 +5,7 @@ import com.revature.notificationservice.entity.Notification;
 import com.revature.notificationservice.repository.NotificationRepository;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -19,11 +20,16 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final JavaMailSender mailSender;
     private final RestTemplate restTemplate;
+    private final String fromEmail;
 
-    public NotificationService(NotificationRepository notificationRepository, JavaMailSender mailSender, RestTemplate restTemplate) {
+    public NotificationService(NotificationRepository notificationRepository, 
+                               JavaMailSender mailSender, 
+                               RestTemplate restTemplate,
+                               @Value("${spring.mail.username}") String fromEmail) {
         this.notificationRepository = notificationRepository;
         this.mailSender = mailSender;
         this.restTemplate = restTemplate;
+        this.fromEmail = fromEmail;
     }
 
     public Notification sendNotification(SendNotificationRequest request) {
@@ -150,7 +156,7 @@ public class NotificationService {
                     helper.setText(htmlMsg, true);
                     helper.setTo(email);
                     helper.setSubject(subject);
-                    helper.setFrom("parulss1606@gmail.com");
+                    helper.setFrom(fromEmail);
                     mailSender.send(mimeMessage);
                 }
             }
